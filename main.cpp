@@ -6,7 +6,7 @@
 
 #define NOT_FOUND -1
 #define ACCES_ERROR 1
-#define TEST
+//#define TEST
 
 using namespace std;
 
@@ -56,7 +56,7 @@ int main(int argc, char **argv){
 		create_dir(dir);
 			
 		backup = file_to_vector(dir + "backup");
-		links = pr.top_search_videos(db.get_keyword(*tp));
+		links = pr.top_search_videos(db.get_keyword(*tp), db.get_category(*tp));
 		
 		if(links.empty()){
 			cout << endl;
@@ -85,6 +85,7 @@ int main(int argc, char **argv){
 				cout << "do you want to continue ?(yes/no) ";
 				if(yorn())
 					continue;
+				pr.remove_video();	
 				break;
 			}
 			
@@ -101,9 +102,7 @@ int main(int argc, char **argv){
 
 int main(){
 	pyrat pr;
-	pr.set("/home/rusik/", "https://www.youtube.com/watch?v=r8coOHhotXY");
-	pr.download();
-	pr.upload("");
+	cout << pr.check_catgory("https://www.youtube.com/watch?v=9P1c1Rvolb8", "News & Politics") << endl;
 	return 0;
 }
 #endif

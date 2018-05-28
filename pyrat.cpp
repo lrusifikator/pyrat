@@ -62,18 +62,10 @@ string pyrat::get_page(string url){
 
 string pyrat::get_description(){
 	if(!desc.empty()) 
-		return desc;	
-	unsigned int pos, i;
-
-	pos = vdesc.find("description");
-	pos = vdesc.find("\"", pos) + 1;
-	pos = vdesc.find("\"", pos) + 1;
-	i = vdesc.find("\"", pos);
-	
-	return substr(vdesc, pos, i-1) + string("Orginal video : ") + link;
-	
-	//return (desc = string("Orginal video : ") + link);
-	
+		return desc;
+		
+	desc = get_description(link);
+	return desc + string("\nOrginal video : ") + link;
 }
 
 string pyrat::get_tags(string link){ 
@@ -130,12 +122,71 @@ int pyrat::get_likes(string link){
 	return stoi(pg);
 }
 
-slist pyrat::top_search_videos(string search_word){ 
+
+string pyrat::get_description(string l){
+	unsigned int pos, i;
+	string d = get_vdesc(l);
+	pos = d.find("description");
+	pos = d.find("\"", pos) + 1;
+	pos = d.find("\"", pos) + 1;
+	i = d.find("\"", pos);
+	
+	return substr(d, pos, i-1);
+}
+
+string pyrat::get_rvdesc(string link){
+	rvdesc = get_vdesc(link);
+	return rvdesc;
+}
+
+string pyrat::get_description_r(string link){
+	unsigned int pos, i;
+	if(rlink != link){
+		rlink = link;
+		get_rvdesc(link);
+	}
+	pos = rvdesc.find("description");
+	pos = rvdesc.find("\"", pos) + 1;
+	pos = rvdesc.find("\"", pos) + 1;
+	i = rvdesc.find("\"", pos);
+	
+	return substr(rvdesc, pos, i-1);
+}
+
+int pyrat::get_likes_r(string link){
+	if(rlink != link){
+		rlink = link;
+		get_rvdesc(link);
+	}
+	unsigned int pos;
+	
+	pos = rvdesc.find("\"like_count\":") + 14;
+	rvdesc = substr(rvdesc, pos, rvdesc.find(", ", pos));
+	return stoi(rvdesc);	
+}
+
+bool pyrat::check_catgory(string l, string cat){
+	if(cat.empty() || cat == " ")
+		return 1;
+	string pg = get_vdesc(l);
+	int pos = pg.find("\"categories\": ") + 16;
+	if(cat == substr(pg, pos, pg.find("]", pos)-1))
+		return 1;
+	return 0;
+}
+
+bool pyrat::lang_test(string l){
+	string lang = string("ldetect \"") + get_description_r(l) + string("\"");
+	if(!system(lang.c_str()))
+		return 0;
+	return 1;
+}
+
+slist pyrat::top_search_videos(string search_word, string cat){ 
 	unsigned long int li=0, end=0, pos;
 	string str;
 	slist ret;
-	string link;
-		
+	string link;  		
 	str = mainol(get_page( (str = string("https://www.youtube.com/results?search_query=") + temp(search_word, ' ', '+') + string("&sp=EgQIAhAB")) ));
 		
 	while(1){
@@ -145,8 +196,7 @@ slist pyrat::top_search_videos(string search_word){
 		
 		end = str.find("</li>", li);
 		pos = str.find("href=\"/watch?", li);
-		
-		//add a language test 
+		 
 		if(str.find("Live now", li) < end || pos > end){   //skip translations
 			end = (li++);
 			continue;
@@ -154,7 +204,9 @@ slist pyrat::top_search_videos(string search_word){
 		
 		pos += 6;
 		link = string("https://youtube.com") + substr(str, pos, str.find("\"", pos));
-		ret.add(link, get_likes(link));
+		
+		if(check_catgory(link, cat) && (lang_test(link)))
+			ret.add(link, get_likes_r(link));
 		end = (li++);
 	}
 	
@@ -175,15 +227,15 @@ vector<string> pyrat::search_videos(string search_word){
 		
 		end = str.find("</li>", li);
 		pos = str.find("href=\"/watch?", li);
-		
-		//add a language test 
+		 
 		if(str.find("Live now", li) < end || pos > end){   //skip translations
 			end = (li++);
 			continue;
 		}
 		
 		pos += 6;
-		links.push_back( string("https://youtube.com") + substr(str, pos, str.find("\"", pos)) );
+		if(lang_test(link))
+			links.push_back( string("https://youtube.com") + substr(str, pos, str.find("\"", pos)) );
 		end = (li++);
 	}
 	
@@ -211,7 +263,7 @@ int pyrat::upload(string category){
 	cout << command << endl;
 	cout << endl;
 	
-	return !system(command.c_str());
+	return system(command.c_str());
 }
 
 

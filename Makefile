@@ -28,7 +28,8 @@ clean:
 	rm -rf *.o 
 
 install:
-		
-
+	sudo cp pyrat /usr/bin/
+	sudo cp ldetect /usr/bin/
+	
 uninstall:
-
+	sudo rm /usr/bin/pyrat

@@ -5,6 +5,7 @@
   
 database::database(string dir){
 	work_dir = dir;
+	create_dir(dir);
 	init_categories();
 	counter=0;
 	path = work_dir + string("database");
@@ -14,6 +15,7 @@ database::database(string dir){
 
 database::database(){
 	work_dir = work_directory;
+	create_dir(work_dir);
 	init_categories();
 	counter=0;
 	path = work_dir + string("database");
@@ -22,9 +24,9 @@ database::database(){
 	
 }
 
-int database::protect_initialize_db(string dir){
+int database::protect_initialize_db(const string dir){
 	int error;
-	if((error = set_db(dir + "/database"))){
+	if((error = set_db(dir + string("database")))){
 		
 		if(error==-2){
 			cout << "it's not a database" << endl;
