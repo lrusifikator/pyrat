@@ -2,7 +2,8 @@ This is a program for piracy on YouTube
 <p>
 This programm just search the most liked video for today on some topic and upload it on your channel
 
-
+<p>
+<p>
 Requirements:
 
 google api and the progress bar
@@ -21,9 +22,12 @@ git clone https://github.com/tokland/youtube-upload.git
 cd youtube-upload
 <p>
 sudo python setup.py install
-
+  
+<p>
 Also you need a google OAuth 2.0 key for your channel, and enable google youtube-api libraries.
-
+<p>
+<p>
+  
 Usage : 
 <p>
 pyrat db                            - open the database file with nano\
