@@ -5,7 +5,11 @@ This programm just search the most liked video for today on some topic and uploa
 <p>
 <p>
 Requirements:
-
+<p>
+langdetect
+<p>
+pip install langdetect
+<p>
 google api and the progress bar
 <p>
 sudo pip install --upgrade google-api-python-client progressbar2
