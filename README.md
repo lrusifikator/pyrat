@@ -12,11 +12,13 @@ sudo pip install --upgrade google-api-python-client progressbar2
 <p>
   
 youtube-dl
+<p>
 sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/local/bin/youtube-dl
 <p>
 sudo chmod a+rx /usr/local/bin/youtube-dl
 
 youtube upload script
+<p>
 git clone https://github.com/tokland/youtube-upload.git
 <p>
 cd youtube-upload
